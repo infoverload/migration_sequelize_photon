@@ -1,0 +1,33 @@
+{
+  "name": "migration_sequelize_photon",
+  "version": "1.0.0",
+  "description": "This is a basic implementation of an Express application that uses [Sequelize](https://sequelize.org).",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infoverload/migration_sequelize_photon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/infoverload/migration_sequelize_photon/issues"
+  },
+  "homepage": "https://github.com/infoverload/migration_sequelize_photon#readme",
+  "devDependencies": {
+    "@types/node": "^12.7.4",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "@types/body-parser": "^1.17.1",
+    "@types/express": "^4.17.1",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "pg": "^7.12.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.18.4"
+  }
+}
