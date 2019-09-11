@@ -1,24 +1,18 @@
-var models  = require('../models');
-var bodyParser = require('body-parser');
-var express = require('express');
+import * as express from "express";
+import * as bodyParser from "body-parser";
+import models, { sequelize } from './models';
 
-var app = express();
+const app = express();
 app.use(bodyParser.json());
 
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize('postgres://user:pass@example.com:5432/dbname');
-
-sequelize
-  .authenticate()
-  .then(() => {
     app.get('/', function(req, res) {
 
         models.User.findAll({
             include: [ models.Task ]
         }).then(function(users) {
             res.render('index', {
-            title: 'Sequelize: Express Example',
-            users: users
+                title: 'Sequelize: Express Example',
+                users: users
             });
         });
     });
@@ -29,7 +23,7 @@ sequelize
         }).then(function() {
             res.redirect('/');
         });
-        });
+    });
         
     app.get('/:user_id/destroy', function(req, res) {
         models.User.destroy({
@@ -59,7 +53,9 @@ sequelize
             res.redirect('/');
         });
     });
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
+
+  sequelize.sync().then(() => {
+    app.listen(3000, () => {
+      console.log(`Example app listening on port 3000`)
+    });
   });
