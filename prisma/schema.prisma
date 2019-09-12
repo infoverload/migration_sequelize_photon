@@ -1,0 +1,28 @@
+generator photon {
+  provider = "photonjs"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://prisma:prisma@localhost:5432/prisma?schema=public"
+}
+
+model Task {
+  id        Int      @id
+  createdAt DateTime @default(now())
+  title     String?
+  updatedAt DateTime @updatedAt
+  userId    User?
+
+  @@map("tasks")
+}
+
+model User {
+  id        Int      @id
+  createdAt DateTime @default(now())
+  tasks     Task[]
+  updatedAt DateTime @updatedAt
+  username  String?  @unique
+
+  @@map("users")
+}
