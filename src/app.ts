@@ -50,7 +50,7 @@ sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
   }
 
   app.listen(3000, () =>
-    console.log(`Example app listening on port 3000`),
+    console.log(`Express application is listening on port 3000`),
   );
 });
 

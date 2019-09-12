@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('postgres://prisma:prisma@localhost:5432/prisma');
+const sequelize = new Sequelize('postgres://user:password@localhost:5432/database');
 
 const models = {
   User: sequelize.import('./user'),
