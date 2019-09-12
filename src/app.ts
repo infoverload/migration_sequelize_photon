@@ -5,57 +5,85 @@ import models, { sequelize } from './models';
 const app = express();
 app.use(bodyParser.json());
 
-    app.get('/', function(req, res) {
+// Define routes
+app.get('/users', async (req, res) => {
+    const users = await models.User.findAll();
+    return res.send(users);
+});
 
-        models.User.findAll({
-            include: [ models.Task ]
-        }).then(function(users) {
-            res.render('index', {
-                title: 'Sequelize: Express Example',
-                users: users
-            });
-        });
-    });
-    
-    app.post('/create', function(req, res) {
-        models.User.create({
-            username: req.body.username
-        }).then(function() {
-            res.redirect('/');
-        });
-    });
-        
-    app.get('/:user_id/destroy', function(req, res) {
-        models.User.destroy({
-            where: {
-            id: req.params.user_id
-            }
-        }).then(function() {
-            res.redirect('/');
-        });
-    });
-        
-    app.post('/:user_id/tasks/create', function (req, res) {
-        models.Task.create({
-            title: req.body.title,
-            UserId: req.params.user_id
-        }).then(function() {
-            res.redirect('/');
-        });
-    });
-        
-    app.get('/:user_id/tasks/:task_id/destroy', function (req, res) {
-        models.Task.destroy({
-            where: {
-            id: req.params.task_id
-            }
-        }).then(function() {
-            res.redirect('/');
-        });
+app.get('/users/:userId', async (req, res) => {
+    const user = await models.User.findByPk(
+        req.params.userId,
+    );
+    return res.send(user);
+});
+
+app.get('/tasks', async (req, res) => {
+    const tasks = await models.Task.findAll();
+    return res.send(tasks);
+});
+
+app.post('/tasks', async (req, res) => {
+    const task = await models.Task.create({
+        title: req.body.title,
     });
 
-  sequelize.sync().then(() => {
-    app.listen(3000, () => {
-      console.log(`Example app listening on port 3000`)
+    return res.send(task);
+});
+
+app.delete('/tasks/:taskId', async (req, res) => {
+    const result = await models.Task.destroy({
+        where: { id: req.params.taskId },
     });
-  });
+
+    return res.send(true);
+});
+
+
+// Start
+const eraseDatabaseOnSync = true;
+
+sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
+  if (eraseDatabaseOnSync) {
+    console.log(`Database & tables created!`);
+    createUsersWithTasks();
+  }
+
+  app.listen(3000, () =>
+    console.log(`Example app listening on port 3000`),
+  );
+});
+
+// Seed database 
+const createUsersWithTasks = async () => {
+  await models.User.create(
+    {
+      username: 'Jane',
+      tasks: [
+        {
+          title: 'Pick up laundry',
+        },
+      ],
+    },
+    {
+      include: [models.Task],
+    },
+  );
+
+  await models.User.create(
+    {
+      username: 'John',
+      tasks: [
+        {
+          title: 'Call the doctor',
+        },
+        {
+          title: 'Do groceries',
+        },
+      ],
+    },
+    {
+      include: [models.Task],
+    },
+  );
+};

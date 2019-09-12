@@ -12,4 +12,5 @@ const task = (sequelize, DataTypes) => {
   };
   return Task;
 };
+
 export default task;

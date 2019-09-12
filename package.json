@@ -2,9 +2,9 @@
   "name": "migration_sequelize_photon",
   "version": "1.0.0",
   "description": "This is a basic implementation of an Express application that uses [Sequelize](https://sequelize.org).",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "tsc && node src/index.js"
+    "start": "tsc && node src/app.js"
   },
   "repository": {
     "type": "git",
