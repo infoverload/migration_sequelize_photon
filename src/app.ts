@@ -24,21 +24,28 @@ app.get('/tasks', async (req, res) => {
 });
 
 app.post('/tasks', async (req, res) => {
-    const task = await models.Task.create({
+    const task = await models.Task.create(
+      {
         title: req.body.title,
-    });
-
+        users: [
+          {
+            username: req.body.username
+          }, 
+        ],
+      },
+      {
+        include: [models.User]
+      }
+    );
     return res.send(task);
 });
 
 app.delete('/tasks/:taskId', async (req, res) => {
     const result = await models.Task.destroy({
-        where: { id: req.params.taskId },
+        where: { id: req.params.taskId }
     });
-
-    return res.send(true);
+    return res.send(result);
 });
-
 
 // Start
 const eraseDatabaseOnSync = true;
@@ -61,13 +68,13 @@ const createUsersWithTasks = async () => {
       username: 'Jane',
       tasks: [
         {
-          title: 'Pick up laundry',
+          title: 'Pick up laundry'
         },
       ],
     },
     {
-      include: [models.Task],
-    },
+      include: [models.Task]
+    }
   );
 
   await models.User.create(
@@ -75,15 +82,15 @@ const createUsersWithTasks = async () => {
       username: 'John',
       tasks: [
         {
-          title: 'Call the doctor',
+          title: 'Call the doctor'
         },
         {
-          title: 'Do groceries',
+          title: 'Do groceries'
         },
       ],
     },
     {
-      include: [models.Task],
-    },
+      include: [models.Task]
+    }
   );
 };
