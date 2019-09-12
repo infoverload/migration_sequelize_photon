@@ -205,11 +205,14 @@ npm start
 
 ## 3. Specifying the data source
 
-In the Sequelize project example, the data source and credentials can be defined in...:
+To connect to the database with Sequelize, you must create a Sequelize instance. This can be done by either passing the connection parameters separately to the Sequelize constructor or by passing a single connection URI:
 
 ```ts
+const Sequelize = require('sequelize');
 const sequelize = new Sequelize('postgres://user:password@localhost:5432/database');
 ```
+
+Sequelize is independent from specific dialects. This means that you'll have to install the respective connector library to your project yourself. For PostgreSQL, two libraries are needed, `pg` and `pg-hstore`.
 
 In your Photon.js project, this was automatically generated when you ran through the `prisma2 init` process and located in your [`schema.prisma`](https://github.com/infoverload/migration_typeorm_photon/blob/master/prisma/schema.prisma) file:
 
@@ -265,17 +268,10 @@ import Photon from '@generated/photon'
 
 ## 5. Setting up a connection
 
-In Sequelize, there are several ways to create a connection. 
-
-In the sample project: 
+In Sequelize, the database connection has been set up with the `sequelize` constructor and a connection string. If you want Sequelize to automatically create tables (or modify them as needed) according to your model definition, you can use the sync method, as follows: 
 
 ```ts
-const Sequelize = require('sequelize');
-
-const sequelize = new Sequelize('postgres://user:password@localhost:5432/database');
-
 //...
-
 const eraseDatabaseOnSync = true;
 
 sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
@@ -286,7 +282,6 @@ sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
   //...
 });
 ```
-
 
 ### Migrating the connection
 
@@ -304,9 +299,7 @@ The `Photon` instance connects [lazily](https://github.com/prisma/prisma2/blob/m
 
 ## 6. Creating models
 
-In Sequelize, models are...
-
-In the sample Sequelize project, the `task` and `user` models are defined like this:
+In Sequelize, a model is a class that extends `Sequelize.Model`. Models can be defined in two equivalent ways, with `Sequelize.Model.init(attributes, options)` or `sequelize.define`. To define mappings between a model and a table, use the define method. Each column must have a datatype.
 
 [task.ts](https://github.com/infoverload/migration_sequelize_photon/blob/sequelize/src/models/task.ts)
 ```ts
@@ -346,7 +339,11 @@ const user = (sequelize, DataTypes) => {
 export default user;
 ```
 
-The models are then imported:
+The above code tells Sequelize to expect a table named `users` in the database with the field `username` and a table named `tasks` with the field `title`.
+
+Sequelize also defines by default the fields `id` (primary key), `createdAt` and `updatedAt` to every model.
+
+You can store your model definitions in separate files and use the `import` method to import them. The returned object is exactly the same as defined in the imported file's function.
 
 [models/index.ts](https://github.com/infoverload/migration_sequelize_photon/blob/sequelize/src/models/index.ts)
 ```ts
@@ -403,6 +400,8 @@ If you change your datamodel, you can regenerate Photon.js and all typings will 
 
 
 ## 7. Querying the database   
+
+Sequelize has a lot of options for querying. EXPAND
 
 In the sample project, you first import the `sequelize` constructor and the models you defined earlier.  Then, in your Express application route for the `/users` endpoint, use the `User` model's `findAll()` method to fetch all the users from the database and send the result back. 
 
