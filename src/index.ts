@@ -23,15 +23,24 @@ app.get(`/users/:id`, async (req, res) => {
 })
  
 app.get('/tasks', async (req, res) => {
-    const tasks = await photon.tasks.findMany()
+    const tasks = await photon.tasks.findMany({
+       include: { users: true }
+    })
     res.json(tasks)
 })
 
 app.post(`/tasks`, async (req, res) => {
-  const { title } = req.body
+  const { title, username } = req.body
   const post = await photon.tasks.create({
     data: {
         title,
+        users: {
+          create: [
+            {
+              username
+            }
+          ]
+        }
     },
   })
   res.json(post)
