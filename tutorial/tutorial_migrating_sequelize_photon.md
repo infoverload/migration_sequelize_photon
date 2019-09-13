@@ -16,7 +16,8 @@ This tutorial will show you how to achieve the following in your migration proce
 5. [Setting up a connection](#5-Setting-up-a-connection)
 6. [Modelling data](#6-Creating-models)
 7. [Querying the database](#7-Querying-the-database)
-8. [Other migration considerations](#8-Other-considerations)
+8. [Running the project](#8.-Running-the-project)
+9. [Other migration considerations](#9-Other-considerations)
 
 ## Prerequisites
 
@@ -124,7 +125,7 @@ model User {
   createdAt DateTime @default(now())
   tasks     Task[]
   updatedAt DateTime @updatedAt
-  username  String?  @unique
+  username  String   @unique
 
   @@map("users")
 }
@@ -181,27 +182,19 @@ Create a [tsconfig.json](https://github.com/infoverload/migration_sequelize_phot
 }
 ```
 
-### 2.3. Add a start script to `package.json`
+### 2.3. Add a postinstall script to `package.json`
 
-In your [package.json](https://github.com/infoverload/migration_sequelize_photon/blob/master/package.json) file, add a start script:
+In your [package.json](https://github.com/infoverload/migration_sequelize_photon/blob/master/package.json) file, add a postinstall script:
 
 ```diff
 //...
 "scripts": {
-+ "start": "ts-node src/index.ts"
-  "postinstall": "prisma2 generate"
++ "postinstall": "prisma2 generate"
 }
 //...
 ```
 
-### 2.4 Run the project
-
-When finished with your project, run it like this:
-
-```sh
-npm start
-```
-
+It is helpful to add this postinstall script because if you clone and install the project for the first time, the script will automatically generate the Photon.js client and you can start running the code, reducing an extra step. It is also useful when you update/regenerate the Photon.js client because the update process will automatically generate the new version of the client for you. 
 
 ## 3. Specifying the data source
 
@@ -382,7 +375,7 @@ model User {
   createdAt DateTime @default(now())
   tasks     Task[]
   updatedAt DateTime @updatedAt
-  username  String?  @unique
+  username  String   @unique
 
   @@map("users")
 }
@@ -397,6 +390,8 @@ Things to note:
 - `@unique` directive expresses a unique constraint which means that Prisma enforces that no two records will have the same values for that field
 
 If you change your datamodel, you can regenerate Photon.js and all typings will be updated.
+
+> **Note**: The field that points to the `User` model in the `Task` model is called `userId`. The naming occurred from the introspection process but is a bit misleading because it doesn't refer to the actual ID of the user, which may lead to potential problems when using the Photon.js API. A solution may be to rename `userID` to `user`. 
 
 
 ## 7. Querying the database   
@@ -557,7 +552,26 @@ app.delete(`/tasks/:id`, async (req, res) => {
 Now you can migrate the other routes following this pattern or create new routes.  If you get stuck, refer back to the `master` branch of the project. 
 
 
-## 8. Other considerations
+## 8. Running the project
+
+In your [package.json](https://github.com/infoverload/migration_sequelize_photon/blob/master/package.json) file, add a start script:
+
+```diff
+//...
+"scripts": {
++ "start": "ts-node src/index.ts"
+  "postinstall": "prisma2 generate"
+}
+//...
+
+When finished with your project, run it like this:
+
+```sh
+npm start
+```
+
+
+## 9. Other considerations
 
 The sample project that was used demonstrated the fundamental capabilities of both Sequelize and Photon.js but there are more things to consider when migrating, such as transactions and working with relations, which may be covered in a future tutorial.  The main thing to note is that while Photon.js is comparable to an ORM, it should rather be considered as an auto-generated database client.    
 
