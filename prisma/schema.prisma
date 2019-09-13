@@ -12,7 +12,7 @@ model Task {
   createdAt DateTime @default(now())
   title     String?
   updatedAt DateTime @updatedAt
-  userId    User?
+  user      User?
 
   @@map("tasks")
 }
