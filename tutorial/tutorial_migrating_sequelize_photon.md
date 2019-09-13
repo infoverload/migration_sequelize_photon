@@ -391,7 +391,39 @@ Things to note:
 
 If you change your datamodel, you can regenerate Photon.js and all typings will be updated.
 
-> **Note**: The field that points to the `User` model in the `Task` model is called `userId`. The naming occurred from the introspection process but is a bit misleading because it doesn't refer to the actual ID of the user, which may lead to potential problems when using the Photon.js API. A solution may be to rename `userID` to `user`. 
+#### Note about the auto-generated Prisma schema
+1. The field that points to the `User` model in the `Task` model is called `userId`. The naming occurred from the introspection process but is a bit misleading because it doesn't refer to the actual ID of the user, which may lead to potential problems when using the Photon.js API. A solution may be to rename `userID` to `user`.  
+2. There is some mismatch between the `DateTime` types of Prisma and the ones of Postgres, so you may want to remove the `createdAt` and `updatedAt` fields for now
+3. The resulting schema after these changes may look like <Details><Summary>this</Summary>
+
+    ```groovy
+    generator photon {
+      provider = "photonjs"
+    }
+
+    datasource db {
+      provider = "postgresql"
+      url      = "postgresql://prisma:prisma@localhost:5432/prisma3?schema=public"
+    }
+
+    model Task {
+      id        Int      @id
+      title     String?
+      user      User?
+
+      @@map("tasks")
+    }
+
+    model User {
+      id        Int      @id
+      tasks     Task[]
+      username  String   @unique
+
+      @@map("users")
+    }
+    ```
+    </Details>
+
 
 
 ## 7. Querying the database   
