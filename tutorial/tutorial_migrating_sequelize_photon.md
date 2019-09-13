@@ -400,7 +400,7 @@ If you change your datamodel, you can regenerate Photon.js and all typings will 
 
 #### Note about the auto-generated Prisma schema
 1. The field that points to the `User` model in the `Task` model is called `userId`. The naming occurred from the introspection process but is a bit misleading because it doesn't refer to the actual ID of the user. A solution may be to rename `userID` to `user`.  This can avoid naming confusions when using the Photon.js API.  
-2. There is some mismatch between the `DateTime` types of Prisma and the ones of Postgres, so you may want to remove the `createdAt` and `updatedAt` fields for now. A GitHub issue has been created. 
+2. There is some mismatch between the `DateTime` types of Prisma and the ones of Postgres, so you may want to remove the `createdAt` and `updatedAt` fields for now. A [GitHub issue](https://github.com/prisma/prisma2/issues/552) has been created. 
 3. The resulting schema after these changes may look like <Details><Summary>this.</Summary>
 
     ```groovy
