@@ -64,7 +64,7 @@ Make sure that you have the [Prisma 2 CLI](https://github.com/prisma/prisma2/blo
 npm install -g prisma2
 ```
 
-Prisma lets you [introspect](https://github.com/prisma/prisma2/blob/master/docs/introspection.md) your database to derive a data model definition from the current database schema. This feature is typically used in [Photon-only](https://github.com/prisma/prisma2/blob/master/docs/photon/use-only-photon.md) projects where database migrations are not performed via [Lift](https://lift.prisma.io), so the data model needs to be updated manually after each database schema change.
+Prisma lets you [introspect](https://github.com/prisma/prisma2/blob/master/docs/introspection.md) your database to derive a data model definition from the current database schema. 
 
 Now you are ready to introspect the database from the Sequelize project.  Navigate outside of the current project directory so you can start a new project. In your terminal, type the command:
 
@@ -85,7 +85,7 @@ This will initialize a new Prisma project name "photonjs_app" and start the init
 
 The introspection process is now complete.  You should see a message like:
 ```
- SUCCESS  The introspect directory was created!
+ SUCCESS  The photonjs_app directory was created!
  SUCCESS  Prisma is connected to your database at localhost
 ```
 
@@ -139,7 +139,14 @@ cd photonjs_app
 prisma2 dev
 ```
 
-This launches the [development mode](https://github.com/prisma/prisma2/blob/master/docs/development-mode.md) and creates a [Prisma Studio](https://github.com/prisma/studio) endpoint for you.  Go to the endpoint (i.e. http://localhost:5555 ) and explore the generated Prisma schema visually in your browser. 
+This launches the [development mode](https://github.com/prisma/prisma2/blob/master/docs/development-mode.md). When in development mode, Prisma 2 runs a development server in the background that watches your [Prisma schema file](https://github.com/prisma/prisma2/blob/master/docs/prisma-schema-file.md). 
+
+Whenever any changes are made in the schema file, the development server:
+- (re)generates your data source clients (e.g. Photon.js)
+- updates your database schema 
+- creates a [Prisma Studio](https://github.com/prisma/studio) endpoint for you
+
+Go to the endpoint (i.e. http://localhost:5555 ) and explore the generated Prisma schema visually in your browser. 
 
 
 ## 2. Setting up your TypeScript project 
@@ -194,7 +201,7 @@ In your [package.json](https://github.com/infoverload/migration_sequelize_photon
 //...
 ```
 
-It is helpful to add this postinstall script because if you clone and install the project for the first time, the script will automatically generate the Photon.js database client and you can start running the code, reducing an extra step. It is also useful when you update/regenerate the Photon.js database client because the update process will automatically generate the new version of the client for you. 
+It is considered best practice to add Photon.js generation as a `postinstall` script because if you clone and install the project for the first time, the script will automatically generate the Photon.js database client and you can start running the code, reducing an extra step. 
 
 ## 3. Specifying the data source
 
@@ -207,7 +214,7 @@ const sequelize = new Sequelize('postgres://user:password@localhost:5432/databas
 
 Sequelize is independent from specific dialects. This means that you'll have to install the respective connector library to your project yourself. For PostgreSQL, two libraries are needed, `pg` and `pg-hstore`.
 
-In your Photon.js project, the data source and connection string was automatically generated when you ran through the `prisma2 init` process and located in your [`schema.prisma`](https://github.com/infoverload/migration_typeorm_photon/blob/master/prisma/schema.prisma) file:
+In your Photon.js project, the data source and connection string was automatically generated when you ran through the `prisma2 init` process and is located in your [schema.prisma](https://github.com/infoverload/migration_typeorm_photon/blob/master/prisma/schema.prisma) file:
 
 ```groovy
 //...
@@ -392,9 +399,9 @@ Things to note:
 If you change your datamodel, you can regenerate Photon.js and all typings will be updated.
 
 #### Note about the auto-generated Prisma schema
-1. The field that points to the `User` model in the `Task` model is called `userId`. The naming occurred from the introspection process but is a bit misleading because it doesn't refer to the actual ID of the user, which may lead to potential problems when using the Photon.js API. A solution may be to rename `userID` to `user`.  
-2. There is some mismatch between the `DateTime` types of Prisma and the ones of Postgres, so you may want to remove the `createdAt` and `updatedAt` fields for now
-3. The resulting schema after these changes may look like <Details><Summary>this</Summary>
+1. The field that points to the `User` model in the `Task` model is called `userId`. The naming occurred from the introspection process but is a bit misleading because it doesn't refer to the actual ID of the user. A solution may be to rename `userID` to `user`.  This can avoid naming confusions when using the Photon.js API.  
+2. There is some mismatch between the `DateTime` types of Prisma and the ones of Postgres, so you may want to remove the `createdAt` and `updatedAt` fields for now. A GitHub issue has been created. 
+3. The resulting schema after these changes may look like <Details><Summary>this.</Summary>
 
     ```groovy
     generator photon {
