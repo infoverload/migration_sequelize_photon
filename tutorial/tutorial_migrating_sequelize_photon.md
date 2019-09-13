@@ -1,6 +1,6 @@
 # Tutorial: Migrating from Sequelize to Photon.js
 
-[Sequelize](https://sequelize.org/) and [Photon.js](https://photonjs.prisma.io/) both act as abstraction layers between your application and your database, but each works differently under the hood and provides different types of abstractions. While migrating an ORM to Photon.js may be an investment, the Prisma engine allows you to write more explicit, clear, and performant code in the long run.  
+[Sequelize](https://sequelize.org/) and [Photon.js](https://photonjs.prisma.io/) both act as abstraction layers between your application and your database, but each works differently under the hood and provides different types of abstractions.   
 
 In this tutorial, we will compare both approaches for working with databases and walk through how to migrate from a Sequelize project to a Photon.js one.
 
