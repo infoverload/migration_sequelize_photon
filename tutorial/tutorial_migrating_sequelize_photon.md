@@ -428,6 +428,8 @@ If you change your datamodel, you can regenerate Photon.js and all typings will 
 
 ## 7. Querying the database   
 
+### Migrating the `/users` route (`GET`)
+
 Sequelize has a lot of options for querying your database, which you can learn more about [here](https://sequelize.org/master/manual/querying.html). 
 
 In the sample project, you first import the `sequelize` constructor and the models you defined earlier.  Then, in your Express application route for the `/users` endpoint, use the `User` model's `findAll()` method to fetch all the users from the database and send the result back. 
@@ -460,8 +462,6 @@ Your generated Photon API will expose the following [CRUD operations](https://gi
 - `delete`
 - `deleteMany`
 
-### Migrating the `/users` route (`GET`)
-
 So to implement the same route and endpoint in your Photon.js project, go to your `index.ts` file, and in the `/users` endpoint for the `app.get` route, fetch all the posts from the database with [`findMany`](https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#findMany), a method exposed for the `User` model with the generated Photon API.  Then send the results back.  Note that the API calls are asynchronous so we can `await` the results of the operation.
 
 ```ts
@@ -486,6 +486,8 @@ app.listen(3000, () =>
 )
 ```
 
+### Migrating the `/users/:id` route (`GET`)
+
 Let's migrate another route. In the Sequelize project, this is the endpoint to retrieve a user by it's id:
 
 ```ts
@@ -498,8 +500,6 @@ app.get('/users/:userId', async (req, res) => {
 });
 //...
 ``` 
-
-### Migrating the `/users/:id` route (`GET`)
 
 So to implement the same route and endpoint in your Photon.js project, go to your `index.ts` file, and in the `/users/:id` endpoint, save the `id` of the post we want from the request parameter, use the `findOne` method generated for the `user` model to fetch a post identified by a unique value and specify the unique field to be selected with the `where` option.  Then send the results back.  
 
@@ -517,6 +517,8 @@ app.get(`/users/:id`, async (req, res) => {
 //...
 ```
 
+### Migrating the `/tasks` route (`POST`)
+
 Let's migrate the route that handles POST requests.  In the Sequelize project, this is the endpoint to create and save a new task:
 
 ```ts
@@ -530,8 +532,6 @@ app.post('/tasks', async (req, res) => {
 });
 //...
 ```
-
-### Migrating the `/tasks` route (`POST`)
 
 To implement the same route and endpoint in your Photon.js project, go to your `index.ts` file, and in the `/tasks` endpoint for the `app.post` route, save the user input from the request body, use the `create` method generated for the `task` model to create a new record with the requested data, and return the newly created object.  
 
@@ -549,6 +549,8 @@ app.post(`/tasks`, async (req, res) => {
 //...
 ```
 
+### Migrating the `/tasks/:id` route (`DELETE`)
+
 Let's migrate one last route.  In the Sequelize project, this is the endpoint to delete a task by it's id: 
 
 ```ts
@@ -562,8 +564,6 @@ app.delete('/tasks/:taskId', async (req, res) => {
 });
 //...
 ```
-
-### Migrating the `/tasks/:id` route (`DELETE`)
 
 To implement the same route and endpoint in your Photon.js project, go to your `index.ts` file, and in the `/posts/:id` endpoint for the `app.delete` route, save the `id` of the post we want to delete from the request body, use the `delete` method generated for the `post` model to delete an existing record `where` the `id` matches the requested input, and return the corresponding object.  
 
@@ -595,6 +595,7 @@ In your [package.json](https://github.com/infoverload/migration_sequelize_photon
   "postinstall": "prisma2 generate"
 }
 //...
+```
 
 When finished with your project, run it like this:
 
